@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Find me</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"
+            integrity="sha256-WAgYcAck1C1/zEl5sBl5cfyhxtLgKGdpI3oKyJffVRI="
+            crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" media="all"
+          href="/css/profile.css" th:href="@{/css/profile.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+
+        $("#sendRequest").submit(function (e) {
+
+            e.preventDefault();
+
+            $.ajax({
+                url: "/sendFriendRequest",
+                type: "POST",
+                data: {"id": $('#userId').val()},
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="page">
+    <div class="top-section">
+        <header class="header">
+            <div class="logo">
+                <img
+                        class="logo__image"
+                        src="https://gromcode.s3.eu-central-1.amazonaws.com/front-end/html-css/lesson26/hw1/LogoSmallSolid.png"
+                        alt="logo"
+                />
+                <div class="logo__text">
+                    <div class="logo__name">FindMe</div>
+                </div>
+            </div>
+            <nav class="navigation">
+                <a href="#" class="navigation-item">My Profile</a>
+            </nav>
+            <button class="action_button header__button">Login</button>
+            <button class="action_button header__button">Logout</button>
+        </header>
+    </div>
+
+    <section class="profile">
+        <div class="container">
+            <div class="user__banner block">
+                <img
+                        src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                        alt="Admin"
+                        class="rounded-circle"
+                        width="150"
+                />
+                <h1 class="name" th:text="${user.firstName}"></h1>
+                <h1 class="id" th:text="${user.id}"></h1>
+                <input id="userId" type="text" th:value="${user.id}" hidden/>
+                <div class="user__banner-buttons">
+                    <!--                    <button value="val_1" name="but1" class="btn-primary btn">Add to friends</button>-->
+                    <form th:action="@{/user/sendFriendRequest}" method="post">
+                        <input type="hidden" name="id" th:value="${userId}"/>
+                        <button class="btn-primary btn" type="submit">
+                            Add to Friends
+                        </button>
+                    </form>
+                    <form th:action="@{/user/message}" method="post">
+                        <button class="btn-secondary btn" type="submit">Message</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="user__info block">
+                <div class="row">
+                    <h5>Phone</h5>
+                    <h6 th:text="${user.phone}"></h6>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <h5>Country</h5>
+                    <h6 th:text="${user.country}"></h6>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <h5>City</h5>
+                    <h6 th:text="${user.city}"></h6>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <h5>Age</h5>
+                    <h6 th:text="${user.age}"></h6>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <h5>DateRegistered</h5>
+                    <h6 th:text="${user.dateRegistered}"></h6>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <h5>DateLastActive</h5>
+                    <h6 th:text="${user.dateLastActive}"></h6>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <h5>RelationshipStatus</h5>
+                    <h6 th:text="${user.relationshipStatus}"></h6>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <h5>Religion</h5>
+                    <h6 th:text="${user.religion}"></h6>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <h5>School</h5>
+                    <h6 th:text="${user.school}"></h6>
+                </div>
+                <hr/>
+
+                <div class="row">
+                    <h5>University</h5>
+                    <h6 th:text="${user.university}"></h6>
+                </div>
+                <hr/>
+            </div>
+        </div>
+    </section>
+
+    <section class="friends-post-block">
+        <div class="post">
+            <div class="posts">
+                <h1>Posts</h1>
+                <table>
+                    <tr>
+                        <th></th>
+                    </tr>
+                    <th:block th:each="posts : ${posts}">
+                        <tr>
+                            <td class="post-message" th:text="${posts.message}"></td>
+                        </tr>
+                    </th:block>
+                </table>
+            </div>
+        </div>
+
+        <div class="post">
+            <div class="post-block">
+                <h1>Write Post</h1>
+                <form th:action="@{/addPost}" method="post">
+                    <textarea
+                            placeholder="Write your post"
+                            rows="20"
+                            th:name="text"
+                            id="comment_text"
+                            cols="40"
+                            class="ui-autocomplete-input"
+                    ></textarea>
+                    <input
+                            type="hidden"
+                            id="userIdd"
+                            th:name="id"
+                            th:value="${user.id}"
+                    />
+
+                    <input type="input" class="form__field" placeholder="Location" th:name="location" id='location'
+                           th:default="null"/>
+                    <label for="location" class="form__label">location</label>
+
+                    <input type="input" class="form__field" placeholder="User tagged" th:name="user_tagged" id='user_tagged'/>
+                    <label for="location" class="form__label">User tagged</label>
+
+                    <button class="btn-primary btn btn-send" type="submit">
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="friends">
+        <div class="friends-block">
+            <h1 class="income">Friends</h1>
+            <table>
+                <tr>
+                    <th>Name</th>
+                </tr>
+                <th:block th:each="friends : ${friends}">
+                    <tr>
+                        <input
+                                type="hidden"
+                                id="incomeId"
+                                name="id"
+                                th:value="${friends.id}"
+                        />
+                        <td class="user-name" th:text="${friends.firstName}"></td>
+                        <td>
+                            <div class="btns">
+                                <form th:action="@{/user/}" method="GET">
+                                    <button class="btn-primary btn btn-profile" type="submit">
+                                        Profile
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </th:block>
+            </table>
+        </div>
+    </section>
+</div>
+</body>
+</html>

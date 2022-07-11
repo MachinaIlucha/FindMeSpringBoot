@@ -1,0 +1,208 @@
+[type="button"]:not(:disabled),
+[type="reset"]:not(:disabled),
+[type="submit"]:not(:disabled),
+button:not(:disabled) {
+    cursor: pointer;
+}
+
+.header {
+    width: 1120px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    margin-left: 160px;
+    margin-right: 160px;
+    padding: 0;
+}
+
+.navigation {
+    display: flex;
+    margin-left: 420px;
+}
+
+.navigation-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 50px;
+    color: #000000;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.navigation :last-child {
+    width: 180px;
+}
+
+.top-section {
+    padding-top: 30px;
+}
+
+.logo {
+    display: flex;
+}
+
+.logo__image {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.logo__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo__name {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 30px;
+    color: #1968fc;
+}
+
+.header__button {
+    display: block;
+    text-transform: uppercase;
+    margin-left: 20px;
+}
+
+.action_button {
+    background: #1968fc;
+    box-shadow: 0px 10px 40px rgba(25, 104, 252, 0.3);
+    color: #fff;
+    width: 180px;
+    height: 50px;
+    border: none;
+    padding: 0;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 20px;
+    text-shadow: 0px 10px 40px rgba(25, 104, 252, 0.2);
+    text-transform: uppercase;
+}
+
+.reg-section {
+    display: flex;
+    justify-content: center;
+    width: 1400px;
+    margin-top: 100px;
+}
+
+.reg-section .reg-form {
+    display: flex;
+    flex-direction: column;
+    width: 1000px;
+    height: 500px;
+    background-color: rgba(25, 104, 252, 0.3);
+}
+
+.reg-section .reg-form-lable {
+    color: #fff;
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.reg-section .reg-form .registration-form {
+    display: flex;
+    margin-left: 50px;
+    flex-wrap: wrap;
+}
+
+.reg-section .reg-form .registration-form .field {
+    margin-top: 30px;
+    margin-right: 30px;
+}
+
+.reg-btn {
+    position: relative;
+    left: 710px;
+    top: 30px;
+    margin-top: 40px;
+    border-radius: 10px;
+}
+
+.form__group {
+    position: relative;
+    padding: 15px 0 0;
+    margin-top: 10px;
+    width: 200px;
+}
+
+.form__field {
+    font-family: inherit;
+    width: 100%;
+    border: 0;
+    border-bottom: 2px solid #9b9b9b;
+    outline: 0;
+    font-size: 1.3rem;
+    color: #fff;
+    padding: 7px 0;
+    background: transparent;
+    transition: border-color 0.2s;
+}
+
+.form__field::placeholder {
+    color: transparent;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+    font-size: 1.3rem;
+    cursor: text;
+    top: 20px;
+}
+
+.form__label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: #9b9b9b;
+}
+
+.form__field:focus {
+    padding-bottom: 6px;
+    font-weight: 700;
+    border-width: 3px;
+    border-image: linear-gradient(to right, #1968fc, #011a47);
+    border-image-slice: 1;
+}
+
+.form__field:focus ~ .form__label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: #1968fc;
+    font-weight: 700;
+}
+
+/* reset input */
+.form__field:required,
+.form__field:invalid {
+    box-shadow: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background: #fff;
+    font-family: "Mulish", sans-serif;
+    color: #11223f;
+}
+
+.page {
+    width: 1400px;
+    margin: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: url("https://gromcode.s3.eu-central-1.amazonaws.com/front-end/html-css/lesson26/hw1/BackgroundDecor.png");
+}

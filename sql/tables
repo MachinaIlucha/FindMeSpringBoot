@@ -1,0 +1,61 @@
+CREATE TABLE IF NOT EXISTS users(
+    user_id             INT GENERATED ALWAYS AS IDENTITY,
+    firstname           VARCHAR(20),
+    lastname            VARCHAR(30),
+    phone               VARCHAR(20),
+    country             VARCHAR(30),
+    city                VARCHAR(30),
+    age                 INTEGER CHECK (age >= 18),
+    date_registered     TIMESTAMP,
+    date_last_active    TIMESTAMP,
+    relationship_status VARCHAR(30),
+    religion            VARCHAR(30),
+    school              VARCHAR(50),
+    university          VARCHAR(50),
+    email               VARCHAR(50),
+    password            VARCHAR(30),
+    PRIMARY KEY(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS posts(
+    post_id             INT GENERATED ALWAYS AS IDENTITY,
+    message             VARCHAR(200),
+    date_posted         TIMESTAMP,
+    location_tagged     VARCHAR(50),
+    user_posted_id      INT NOT NULL,
+    user_page_posted_id INT NOT NULL,
+    PRIMARY KEY(post_id),
+    CONSTRAINT fk_user_posted_id
+        FOREIGN KEY(user_posted_id)
+            REFERENCES users(user_id),
+    CONSTRAINT fk_user_page_posted_id
+        FOREIGN KEY(user_page_posted_id)
+            REFERENCES users(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS users_tagged(
+    user_tagged_id   INT NOT NULL,
+    post_id          INT NOT NULL,
+    CONSTRAINT fk_user_tagged_id
+        FOREIGN KEY(user_tagged_id)
+            REFERENCES users(user_id),
+    CONSTRAINT fk_post_id
+        FOREIGN KEY(post_id)
+            REFERENCES posts(post_id)
+);
+
+CREATE TABLE messages(
+    message_id      INT GENERATED ALWAYS AS IDENTITY,
+    text            VARCHAR(255),
+    date_sent       TIMESTAMP,
+    date_read       TIMESTAMP,
+    user_from_id    INT NOT NULL,
+    user_to_id      INT NOT NULL,
+    PRIMARY KEY(message_id),
+    CONSTRAINT fk_user_from_id
+        FOREIGN KEY(user_from_id)
+            REFERENCES users(user_id),
+    CONSTRAINT fk_user_to_id
+        FOREIGN KEY(user_to_id)
+            REFERENCES users(user_id)
+);
