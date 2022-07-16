@@ -8,4 +8,6 @@ public interface RelationShipService {
     Relationship sendFriendRequest(HttpSession session, Long user_to_id);
 
     Relationship addFriend(Long user_from_id, Long user_to_id);
+
+    Relationship deniedFriend(Long user_from_id, Long user_to_id);
 }

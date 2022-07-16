@@ -1,72 +1,39 @@
 package com.findme.findme.controller;
 
-import com.findme.findme.DAO.PostDAO;
-import com.findme.findme.DAO.RelationshipDAO;
 import com.findme.findme.DAO.UserDAO;
 import com.findme.findme.entity.*;
 import com.findme.findme.Exceptions.UserAlreadyAuthorizedException;
 import com.findme.findme.Exceptions.UserNotFoundException;
-import com.findme.findme.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 public class UserController {
 
     private final UserDAO userDAO;
-    private final RelationshipDAO relationshipDAO;
-    private final UserService userService;
-    private final PostDAO postDAO;
 
     @Autowired
-    public UserController(UserDAO userDAO, RelationshipDAO relationshipDAO, UserService userService, PostDAO postDAO) {
+    public UserController(UserDAO userDAO) {
         this.userDAO = userDAO;
-        this.relationshipDAO = relationshipDAO;
-        this.userService = userService;
-        this.postDAO = postDAO;
     }
 
     @PostMapping(path = "/user-registration")
     public String registerUser(@ModelAttribute User user) {
         userDAO.save(user);
-        return "redirect:/myProfile";
+        return "redirect:/user/" + user.getId();
     }
 
     @GetMapping(path = "/user/{userId}")
-    public String profile(Model model, @PathVariable Long userId) {
+    public String profile(HttpSession session, Model model, @PathVariable Long userId) {
         User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
-
-        List<User> friends = userService.getFriendsOfUserById(user.getId());
-        List<Post> posts = postDAO.getPostsByUserPagePostedId(user.getId());
-
-        model.addAttribute("user", user)
-                .addAttribute("friends", friends)
-                .addAttribute("posts", posts);
+        model.addAttribute("user", user);
+        model.addAttribute("isAuthorized", session.getAttribute("user"));
 
         return "profile";
-    }
-
-    @GetMapping(path = "/myProfile")
-    public String myProfile(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
-        List<Relationship> incomeRequests = relationshipDAO.getRelationshipsByUserToIdAndStatus(user.getId(), RelationshipType.WAITING);
-        List<Relationship> outcomeRequests = relationshipDAO.getRelationshipsByUserFromIdAndStatus(user.getId(), RelationshipType.WAITING);
-        List<User> friends = userService.getFriendsOfUserById(user.getId());
-        List<Post> posts = postDAO.getPostsByUserPagePostedId(user.getId());
-
-        model.addAttribute("user", user)
-                .addAttribute("incomeRequests", incomeRequests)
-                .addAttribute("outcomeRequests", outcomeRequests)
-                .addAttribute("friends", friends)
-                .addAttribute("posts", posts);
-
-        return "myProfile";
     }
 
     @PostMapping(path = "/login")
@@ -77,10 +44,10 @@ public class UserController {
         User user = userDAO.findUserByEmailAndPassword(login.getEmail(), login.getPassword())
                 .orElseThrow(UserNotFoundException::new);
 
-        session.setAttribute("isAuthorized", login);
+        session.setAttribute("isAuthorized", user);
         session.setAttribute("user", user);
 
-        return "redirect:/myProfile";
+        return "redirect:/user/" + user.getId();
     }
 
     @GetMapping(path = "/logout")

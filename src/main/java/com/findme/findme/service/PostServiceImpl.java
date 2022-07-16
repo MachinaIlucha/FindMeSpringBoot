@@ -26,12 +26,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post addPost(User user_posted_id, Long user_page_posted, String message, String location, String users_tagged) {
-        String[] users = users_tagged.split(" ");
-
         List<User> userList_tagged = new ArrayList<>();
-        for (String user_id: users)
-            userList_tagged.add(userDAO.findById(Long.parseLong(user_id)).orElseThrow(UserNotFoundException::new));
+        if (!users_tagged.isEmpty()){
+            String[] users = users_tagged.split(" ");
 
+            for (String user_id: users)
+                userList_tagged.add(userDAO.findById(Long.parseLong(user_id)).orElseThrow(UserNotFoundException::new));
+        }
 
         Post post = new Post();
         post.setUserPosted(user_posted_id);
@@ -43,5 +44,10 @@ public class PostServiceImpl implements PostService {
         post.setUsersTagged(userList_tagged);
 
         return postDAO.save(post);
+    }
+
+    @Override
+    public List<Post> getPostsByUserFriends(Long user_id) {
+        return postDAO.getPostsByUserFriends(user_id);
     }
 }

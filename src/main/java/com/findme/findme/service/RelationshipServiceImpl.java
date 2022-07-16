@@ -36,6 +36,15 @@ public class RelationshipServiceImpl implements RelationShipService {
     }
 
     @Override
+    public Relationship deniedFriend(Long user_from_id, Long user_to_id) {
+        Relationship relationship = relationshipDAO.getRelationshipByUserFromIdAndUserToId(user_from_id, user_to_id)
+                .orElseThrow(RelationshipNotFoundException::new);
+
+        relationship.setStatus(RelationshipType.CANCELLED);
+        return relationshipDAO.save(relationship);
+    }
+
+    @Override
     public Relationship sendFriendRequest(HttpSession session, Long user_to_id) {
         User userFrom = (User) session.getAttribute("user");
         User userTo = userDAO.findById(user_to_id)

@@ -14,7 +14,7 @@
             href="https://gromcode.s3.eu-central-1.amazonaws.com/front-end/html-css/lesson26/hw1/LogoSmallSolid.png"
     />
     <link rel="stylesheet" type="text/css" media="all"
-          href="/css/profile.css" th:href="@{/css/profile.css}"/>
+          href="/css/profile.css.css" th:href="@{/css/profile.css}"/>
 </head>
 <body>
 <div id="snippetContent">
@@ -56,7 +56,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div class="card" style="height: 100vh;">
+                <div class="card" style="height: 100vh">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-4">
@@ -71,7 +71,10 @@
                                         <div
                                                 class="d-flex align-items-center justify-content-center"
                                         >
-                                            <h5 class="mb-0 mr-2 text-muted" th:text="${user.country}"></h5>
+                                            <h5
+                                                    class="mb-0 mr-2 text-muted"
+                                                    th:text="${user.country}"
+                                            ></h5>
                                         </div>
                                     </div>
                                     <div th:if="${isAuthorized} and ${isAuthorized.id != user.id}" class="buttons" style="display: flex; justify-content: center;">
@@ -84,15 +87,24 @@
                                 <div class="py-4">
                                     <p class="clearfix">
                                         <span class="float-left"> Last active </span>
-                                        <span class="float-right text-muted" th:text="${user.dateLastActive}"></span>
+                                        <span
+                                                class="float-right text-muted"
+                                                th:text="${user.dateLastActive}"
+                                        ></span>
                                     </p>
                                     <p class="clearfix">
                                         <span class="float-left"> Phone </span>
-                                        <span class="float-right text-muted" th:text="${user.phone}"></span>
+                                        <span
+                                                class="float-right text-muted"
+                                                th:text="${user.phone}"
+                                        ></span>
                                     </p>
                                     <p class="clearfix">
                                         <span class="float-left"> Mail </span>
-                                        <span class="float-right text-muted" th:text="${user.email}"></span>
+                                        <span
+                                                class="float-right text-muted"
+                                                th:text="${user.email}"
+                                        ></span>
                                     </p>
                                 </div>
                             </div>
@@ -103,12 +115,12 @@
                                 <div class="mt-4 py-2 border-bottom">
                                     <ul class="nav profile-navbar">
                                         <li class="nav-item">
-                                            <a class="nav-link active" th:href="@{'/user/' + ${user.id}}">
+                                            <a class="nav-link" th:href="@{'/user/' + ${user.id}}">
                                                 <i class="mdi mdi-account-outline"></i> Info
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" th:href="@{'/user/' + ${user.id} + '/feed'}">
+                                            <a class="nav-link active" th:href="@{'/user/' + ${user.id} + '/feed'}">
                                                 <i class="mdi mdi-newspaper"></i> Feed
                                             </a>
                                         </li>
@@ -132,37 +144,53 @@
                                         </div>
                                     </ul>
                                 </div>
-                                <div class="profile-info">
-                                    <div class="py-4">
-                                        <p class="clearfix">
-                                            <span class="float-left"> City </span>
-                                            <span class="float-right text-muted" th:text="${user.city}"></span>
-                                        </p>
-                                        <p class="clearfix">
-                                            <span class="float-left"> Age </span>
-                                            <span class="float-right text-muted" th:text="${user.age}"></span>
-                                        </p>
-                                        <p class="clearfix">
-                                            <span class="float-left"> Date registered </span>
-                                            <span class="float-right text-muted" th:text="${user.dateRegistered}"></span>
-                                        </p>
-                                        <p class="clearfix">
-                                            <span class="float-left"> Relationship Status </span>
-                                            <span class="float-right text-muted" th:text="${user.relationshipStatus}"></span>
-                                        </p>
-                                        <p class="clearfix">
-                                            <span class="float-left"> Religion </span>
-                                            <span class="float-right text-muted" th:text="${user.religion}"></span>
-                                        </p>
-                                        <p class="clearfix">
-                                            <span class="float-left"> School </span>
-                                            <span class="float-right text-muted" th:text="${user.school}"></span>
-                                        </p>
-                                        <p class="clearfix">
-                                            <span class="float-left"> University </span>
-                                            <span class="float-right text-muted" th:text="${user.university}"></span>
-                                        </p>
-                                    </div>
+                                <div class="profile-feed">
+
+                                    <form th:action="@{'/user/' + ${user.id} + '/addPost'}" method="POST" th:if="${isAuthorized}">
+                                        <div class="card-body" style="margin-bottom: 30px">
+                                            <div class="post">
+                                                <textarea
+                                                    class="form-control"
+                                                    placeholder="Post"
+                                                    rows="4"
+                                                    th:name="text"
+                                                ></textarea>
+                                                <input type="input" class="form__field" placeholder="Location" th:name="location"/>
+                                                <input type="input" class="form__field" placeholder="User tagged" th:name="user_tagged"/>
+                                                <div class="post-options">
+                                                    <button
+                                                        class="btn btn-outline-primary float-right"
+                                                        style="margin-top: 10px"
+                                                    >
+                                                        Post
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <th:block th:each="post : ${posts}">
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-start profile-feed-item">
+                                                    <img
+                                                            src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                            alt="profile"
+                                                            class="img-sm rounded-circle"
+                                                    />
+                                                    <div class="ml-4">
+                                                        <h6 th:text="${post.userPosted.firstName}">
+                                                            <small class="ml-4 text-muted" th:text="${post.datePosted}"
+                                                            ><i class="mdi mdi-clock mr-1"></i></small>
+                                                            <small class="ml-4 text-muted" th:text="${post.location}"
+                                                            ><i class="mdi mdi-map-marker mr-1"></i></small>
+                                                        </h6>
+                                                        <p th:text="${post.message}"></p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </th:block>
                                 </div>
                             </div>
                         </div>

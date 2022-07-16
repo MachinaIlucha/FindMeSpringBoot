@@ -12,12 +12,12 @@ import java.util.Optional;
 @Repository
 public interface RelationshipDAO extends JpaRepository<Relationship, Long> {
 
-    @Query(value = "SELECT r FROM Relationship r WHERE (r.userFrom.id = ?1 and r.userTo.id = ?2) or (r.userFrom.id = ?2 and r.userTo.id = ?1)")
+    @Query(value = "SELECT r FROM Relationship r WHERE (r.userFrom.id = :userFrom_id and r.userTo.id = :userTo_id) or (r.userFrom.id = :userTo_id and r.userTo.id = :userFrom_id)")
     Optional<Relationship> getRelationshipByUserFromIdAndUserToId(Long userFrom_id, Long userTo_id);
 
     List<Relationship> getRelationshipsByUserFromIdAndStatus(Long userFrom_id, RelationshipType relationshipType);
 
-    @Query(value = "SELECT r FROM Relationship r WHERE r.userFrom.id = ?1 or r.userTo.id = ?1 and r.status = 'FRIENDS'")
+    @Query(value = "SELECT r FROM Relationship r WHERE (r.userFrom.id = :userFrom_id or r.userTo.id = :userFrom_id) and r.status = 'FRIENDS'")
     List<Relationship> getFriends(Long userFrom_id);
 
     List<Relationship> getRelationshipsByUserToIdAndStatus(Long userFrom_id, RelationshipType relationshipType);
