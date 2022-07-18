@@ -41,8 +41,9 @@
         </div>
       </div>
       <nav class="navigation">
-        <a href="#" class="navigation-item">My Profile</a>
+        <a th:href="@{'/myProfile'}" class="navigation-item">My Profile</a>
       </nav>
+
       <button class="btn btn-primary" onclick="window.location.href='/login'">
         Login
       </button>
@@ -150,7 +151,7 @@
                               ><i class="mdi mdi-map-marker mr-1"></i></small>
                             </h6>
 
-                            <div style="display: flex; margin-left: 50px;">
+                            <div style="display: flex;">
                               <form th:action="@{'/user/' + ${user.id} + '/addFriend/' + ${incomeRequest.userFrom.id}}" method='POST'>
                                 <button class="btn-primary btn" type="submit">Accept</button>
                               </form>

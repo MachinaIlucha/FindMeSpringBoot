@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS users_tagged(
             REFERENCES posts(post_id)
 );
 
-CREATE TABLE messages(
+CREATE TABLE IF NOT EXISTS messages(
     message_id      INT GENERATED ALWAYS AS IDENTITY,
     text            VARCHAR(255),
     date_sent       TIMESTAMP,
@@ -58,4 +58,11 @@ CREATE TABLE messages(
     CONSTRAINT fk_user_to_id
         FOREIGN KEY(user_to_id)
             REFERENCES users(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS role(
+    role_id             INT GENERATED ALWAYS AS IDENTITY,
+    role_name           VARCHAR(12) UNIQUE NOT NULL
+    CHECK (role_name    IN ('USER', 'ADMIN', 'SUPER_ADMIN')),
+    PRIMARY KEY(role_id)
 );

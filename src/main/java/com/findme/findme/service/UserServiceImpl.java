@@ -7,6 +7,8 @@ import com.findme.findme.entity.Relationship;
 import com.findme.findme.entity.User;
 import com.findme.findme.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +26,11 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserDAO userDAO, RelationshipDAO relationshipDAO) {
         this.userDAO = userDAO;
         this.relationshipDAO = relationshipDAO;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userDAO.findUserByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
     @Override

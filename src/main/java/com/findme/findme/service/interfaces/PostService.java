@@ -9,5 +9,5 @@ public interface PostService {
 
     Post addPost(User user_posted, Long user_page_posted, String message, String location, String users_tagged);
 
-    List<Post> getPostsByUserFriends(Long user_id);
+    List<Post> getPostsByUserPage(Long user_id);
 }

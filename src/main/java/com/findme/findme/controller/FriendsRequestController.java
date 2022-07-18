@@ -8,15 +8,14 @@ import com.findme.findme.entity.RelationshipType;
 import com.findme.findme.entity.User;
 import com.findme.findme.service.interfaces.RelationShipService;
 import com.findme.findme.service.interfaces.UserService;
+import com.findme.findme.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -36,18 +35,14 @@ public class FriendsRequestController {
     }
 
     @PostMapping(path = "/user/{userId}/sendFriendRequest")
-    public String sendFriendRequest(HttpSession session, @PathVariable Long userId) {
-        if (session.getAttribute("isAuthorized") == null)
-            return "redirect:/login";
-
-        relationShipService.sendFriendRequest(session, userId);
-
+    public String sendFriendRequest(@PathVariable Long userId) {
+        relationShipService.sendFriendRequest(userId);
         return "redirect:/user/" + userId;
     }
 
     @PostMapping(path = "/user/{userId}/addFriend/{friendId}")
-    public String addFriend(HttpSession session, @PathVariable Long friendId) {
-        User userFrom = (User) session.getAttribute("user");
+    public String addFriend(@PathVariable Long friendId) {
+        User userFrom = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);;
 
         relationShipService.addFriend(userFrom.getId(), friendId);
 
@@ -55,8 +50,8 @@ public class FriendsRequestController {
     }
 
     @PostMapping(path = "/user/{userId}/deniedFriend/{friendId}")
-    public String deniedFriend(HttpSession session, @PathVariable Long friendId) {
-        User userFrom = (User) session.getAttribute("user");
+    public String deniedFriend(@PathVariable Long friendId) {
+        User userFrom = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);;
 
         relationShipService.deniedFriend(userFrom.getId(), friendId);
 
@@ -64,41 +59,43 @@ public class FriendsRequestController {
     }
 
     @GetMapping(path = "/user/{userId}/friends")
-    public String userFriends(HttpSession session, Model model, @PathVariable Long userId) {
+    public String userFriends(Model model, @PathVariable Long userId) {
         User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
 
         List<User> friends = userService.getFriendsOfUserById(user.getId());
 
         model.addAttribute("user", user)
                 .addAttribute("friends", friends)
-                .addAttribute("isAuthorized", session.getAttribute("isAuthorized"));
+                .addAttribute("isAuthorized", userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new));
 
         return "friends";
     }
 
     @GetMapping(path = "/user/{userId}/incomeRequests")
-    public String incomeRequests(HttpSession session, Model model, @PathVariable Long userId) {
+    public String incomeRequests(Model model, @PathVariable Long userId) {
         User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
 
         List<Relationship> incomeRequests = relationshipDAO.getRelationshipsByUserToIdAndStatus(user.getId(), RelationshipType.WAITING);
 
         model.addAttribute("user", user)
                 .addAttribute("incomeRequests", incomeRequests)
-                .addAttribute("isAuthorized", session.getAttribute("isAuthorized"));
+                .addAttribute("isAuthorized", userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new));
 
         return "incomeRequests";
     }
 
     @GetMapping(path = "/user/{userId}/outcomeRequests")
-    public String outcomeRequests(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
+    public String outcomeRequests(Model model) {
+        User user = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);
 
         List<Relationship> outcomeRequests = relationshipDAO.getRelationshipsByUserFromIdAndStatus(user.getId(), RelationshipType.WAITING);
 
         model.addAttribute("user", user)
                 .addAttribute("outcomeRequests", outcomeRequests)
-                .addAttribute("isAuthorized", session.getAttribute("isAuthorized"));
+                .addAttribute("isAuthorized", user);
 
         return "outcomeRequests";
     }
+
+
 }

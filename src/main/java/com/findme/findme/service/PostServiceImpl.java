@@ -47,7 +47,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getPostsByUserFriends(Long user_id) {
-        return postDAO.getPostsByUserFriends(user_id);
+    public List<Post> getPostsByUserPage(Long user_id) {
+        User user = userDAO.findById(user_id).orElseThrow(UserNotFoundException::new);
+        return postDAO.getPostsByUserPagePosted(user);
     }
 }

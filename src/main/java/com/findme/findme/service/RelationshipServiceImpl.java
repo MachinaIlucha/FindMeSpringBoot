@@ -9,10 +9,9 @@ import com.findme.findme.entity.User;
 import com.findme.findme.Exceptions.RelationshipAlreadyExistException;
 import com.findme.findme.Exceptions.UserNotFoundException;
 import com.findme.findme.service.interfaces.RelationShipService;
+import com.findme.findme.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpSession;
 
 @Service
 public class RelationshipServiceImpl implements RelationShipService {
@@ -45,8 +44,8 @@ public class RelationshipServiceImpl implements RelationShipService {
     }
 
     @Override
-    public Relationship sendFriendRequest(HttpSession session, Long user_to_id) {
-        User userFrom = (User) session.getAttribute("user");
+    public Relationship sendFriendRequest(Long user_to_id) {
+        User userFrom = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);
         User userTo = userDAO.findById(user_to_id)
                 .orElseThrow(UserNotFoundException::new);
 
