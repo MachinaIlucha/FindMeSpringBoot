@@ -62,11 +62,18 @@
             <div class="row">
               <div class="col-lg-4">
                 <div class="border-bottom text-center pb-4">
-                  <img
-                          src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                          alt="profile"
-                          class="img-lg rounded-circle mb-3"
-                  />
+                  <label for="image">
+                    <form method="post" th:action="@{'/user/' + ${user.id} + '/updateAvatar'}" enctype="multipart/form-data" style="display: flex; flex-direction: column;">
+                      <input th:if="${isAuthorized.id == user.id}" type="file" name="file" id="image" style="display:none;"/>
+                      <img
+                              th:src="@{${'/img/' + user.avatar}}"
+                              alt="profile"
+                              class="img-lg rounded-circle mb-3"
+                              style="width: 315px; height: 315px;"
+                      />
+                      <button th:if="${isAuthorized.id == user.id}" type="submit" class="btn btn-primary" style="width: 80px; margin-left: 115px">Change</button>
+                    </form>
+                  </label>
                   <div class="mb-3">
                     <h3 th:text="${user.firstName}"></h3>
                     <div
@@ -151,12 +158,24 @@
                       <td>
                         <div class="d-flex align-items-start profile-feed-item">
                           <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                  th:src="@{${'/img/' + friend.avatar}}"
                                   alt="profile"
                                   class="img-sm rounded-circle"
                           />
                           <div class="ml-4">
                             <h6 th:text="${friend.firstName}"></h6>
+
+
+                            <div style="display: flex;">
+                              <form th:action="@{'/user/' + ${friend.id}}" method='GET'>
+                                <button class="btn-primary btn" type="submit">Profile</button>
+                              </form>
+
+                              <form th:if="${isAuthorized.id == user.id}" th:action="@{'/user/' + ${user.id} + '/deleteFriend/' + ${friend.id}}" method='POST'>
+                                <button class="btn-primary btn" type="submit" style="margin-left: 20px">Delete Friend</button>
+                              </form>
+                            </div>
+
                           </div>
                         </div>
                       </td>

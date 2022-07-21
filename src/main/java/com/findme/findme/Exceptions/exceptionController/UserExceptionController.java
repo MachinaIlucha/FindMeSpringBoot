@@ -1,5 +1,6 @@
 package com.findme.findme.Exceptions.exceptionController;
 
+import com.findme.findme.Exceptions.AddFriendException;
 import com.findme.findme.Exceptions.UserAlreadyAuthorizedException;
 import com.findme.findme.Exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -18,5 +19,10 @@ public class UserExceptionController {
     @ExceptionHandler(value = UserAlreadyAuthorizedException.class)
     public ResponseEntity<Object> userAlreadyAuthorizedException() {
         return new ResponseEntity<>("User already authorized", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = AddFriendException.class)
+    public ResponseEntity<Object> userCantAddNotHisFriendException() {
+        return new ResponseEntity<>("You can't add not your income request", HttpStatus.BAD_REQUEST);
     }
 }

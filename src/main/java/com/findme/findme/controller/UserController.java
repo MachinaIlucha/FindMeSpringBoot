@@ -4,54 +4,55 @@ import com.findme.findme.DAO.RoleDAO;
 import com.findme.findme.DAO.UserDAO;
 import com.findme.findme.entity.*;
 import com.findme.findme.Exceptions.UserNotFoundException;
+import com.findme.findme.service.interfaces.UserService;
 import com.findme.findme.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class UserController {
 
     private final UserDAO userDAO;
-
-    private final PasswordEncoder passwordEncoder;
-
-    private final RoleDAO roleDAO;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserDAO userDAO, PasswordEncoder passwordEncoder, RoleDAO roleDAO) {
+    public UserController(UserDAO userDAO, UserService userService, PasswordEncoder passwordEncoder, RoleDAO roleDAO) {
         this.userDAO = userDAO;
-        this.passwordEncoder = passwordEncoder;
-        this.roleDAO = roleDAO;
+        this.userService = userService;
     }
 
     @PostMapping(path = "/user-registration")
     public String registerUser(@ModelAttribute User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Set.of(roleDAO.findRoleByRoleName(RoleName.USER)));
-        userDAO.save(user);
+        userService.registerUser(user);
         return "redirect:/user/" + user.getId();
     }
 
+    @Secured("ROLE_USER")
     @GetMapping(path = "/user/{userId}")
     public String profile(Model model, @PathVariable Long userId) {
         User mainUser = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);
 
         User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
-        model.addAttribute("user", user);
-        model.addAttribute("isAuthorized", mainUser);
+        model.addAttribute("user", user)
+                .addAttribute("isAuthorized", mainUser);
 
         return "profile";
     }
 
+    @Secured("ROLE_USER")
     @GetMapping(path = "/myProfile")
     public String myProfile() {
-        User mainUser = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);
+        return "redirect:/user/" + SecurityUtil.getAuthorizedUserId();
+    }
 
-        return "redirect:/user/" + mainUser.getId();
+    @Secured("ROLE_USER")
+    @PostMapping(path = "/user/{userId}/updateAvatar")
+    public String updateAvatar(@RequestParam("file") MultipartFile file, @PathVariable Long userId){
+        return userService.changeAvatarOfUserByUserId(file,userId);
     }
 }

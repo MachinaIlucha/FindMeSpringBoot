@@ -7,6 +7,7 @@ import com.findme.findme.entity.User;
 import com.findme.findme.service.interfaces.PostService;
 import com.findme.findme.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ public class PostController {
         this.userDAO = userDAO;
     }
 
+    @Secured("ROLE_USER")
     @PostMapping(value = "/user/{userId}/addPost")
     public String addPost(@RequestParam(value = "location") String location,
                           @RequestParam(value = "user_tagged") String users_tagged,
@@ -41,6 +43,7 @@ public class PostController {
         return "redirect:/user/" + userId + "/feed";
     }
 
+    @Secured("ROLE_USER")
     @GetMapping(value = "/user/{userId}/feed")
     public String userFeed(Model model, @PathVariable Long userId){
         User mainUser = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);

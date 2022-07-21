@@ -12,6 +12,7 @@ body {
     display: flex;
     margin-left: 420px;
 }
+
 .navigation-item {
     display: flex;
     justify-content: center;

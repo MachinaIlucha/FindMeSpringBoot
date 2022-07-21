@@ -62,11 +62,18 @@
             <div class="row">
               <div class="col-lg-4">
                 <div class="border-bottom text-center pb-4">
-                  <img
-                          src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                          alt="profile"
-                          class="img-lg rounded-circle mb-3"
-                  />
+                  <label for="image">
+                    <form method="post" th:action="@{'/user/' + ${user.id} + '/updateAvatar'}" enctype="multipart/form-data" style="display: flex; flex-direction: column;">
+                      <input th:if="${isAuthorized.id == user.id}" type="file" name="file" id="image" style="display:none;"/>
+                      <img
+                              th:src="@{${'/img/' + user.avatar}}"
+                              alt="profile"
+                              class="img-lg rounded-circle mb-3"
+                              style="width: 315px; height: 315px;"
+                      />
+                      <button th:if="${isAuthorized.id == user.id}" type="submit" class="btn btn-primary" style="width: 80px; margin-left: 115px">Change</button>
+                    </form>
+                  </label>
                   <div class="mb-3">
                     <h3 th:text="${user.firstName}"></h3>
                     <div
@@ -139,17 +146,20 @@
                       <td>
                         <div class="d-flex align-items-start profile-feed-item">
                           <img
-                                  src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                  th:src="@{${'/img/' + outcomeRequest.userTo.avatar}}"
                                   alt="profile"
                                   class="img-sm rounded-circle"
                           />
                           <div class="ml-4">
                             <h6 th:text="${outcomeRequest.userTo.firstName}">
-                              <small class="ml-4 text-muted" th:text="${outcomeRequest.dateCreated}"
+                              <small class="ml-4" th:text="${outcomeRequest.dateCreated}"
                               ><i class="mdi mdi-clock mr-1"></i></small>
-                              <small class="ml-4 text-muted" th:text="${outcomeRequest.status}"
+                              <small class="ml-4" th:text="${outcomeRequest.status}"
                               ><i class="mdi mdi-map-marker mr-1"></i></small>
                             </h6>
+                            <form th:action="@{'/user/' + ${outcomeRequest.userTo.id}}" method='GET'>
+                              <button class="btn-primary btn" type="submit">Profile</button>
+                            </form>
                           </div>
                         </div>
                       </td>

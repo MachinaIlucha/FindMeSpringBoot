@@ -1,12 +1,12 @@
 package com.findme.findme.config;
 
-import com.findme.findme.entity.RoleName;
 import com.findme.findme.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +19,10 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -48,18 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/",
                         "/user-registration",
                         "/login").permitAll()
-                .mvcMatchers("/myProfile",
-                        "/user/{userId}",
-                        "/user/{userId}/addPost",
-                        "/user/{userId}/feed",
-                        "/user/{userId}/sendFriendRequest",
-                        "/user/{userId}/addFriend/{friendId}",
-                        "/user/{userId}/deniedFriend/{friendId}",
-                        "/user/{userId}/friends",
-                        "/user/{userId}/incomeRequests",
-                        "/user/{userId}/outcomeRequests").hasRole(RoleName.USER.name())
-                .mvcMatchers("/admin").hasRole(RoleName.ADMIN.name())
-                .mvcMatchers("/superAdmin").hasRole(RoleName.SUPER_ADMIN.name())
                 .anyRequest().authenticated()
 
                 .and()

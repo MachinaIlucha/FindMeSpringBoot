@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface PostDAO extends JpaRepository<Post, Long> {
-    List<Post> getPostsByUserPagePosted(User userPagePosted);
+    List<Post> getPostsByUserPagePostedOrderByDatePostedDesc(User userPagePosted);
 }

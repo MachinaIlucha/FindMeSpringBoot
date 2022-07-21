@@ -13,6 +13,8 @@ import com.findme.findme.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RelationshipServiceImpl implements RelationShipService {
 
@@ -44,6 +46,11 @@ public class RelationshipServiceImpl implements RelationShipService {
     }
 
     @Override
+    public void deleteFriend(Long friendId, Long userId) {
+        relationshipDAO.deleteFriend(friendId, userId);
+    }
+
+    @Override
     public Relationship sendFriendRequest(Long user_to_id) {
         User userFrom = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);
         User userTo = userDAO.findById(user_to_id)
@@ -58,5 +65,15 @@ public class RelationshipServiceImpl implements RelationShipService {
         relationship.setUserFrom(userFrom);
 
         return relationshipDAO.save(relationship);
+    }
+
+    @Override
+    public List<Relationship> getRelationshipsByUserToIdAndStatus(Long userTo_id, RelationshipType relationshipType) {
+        return relationshipDAO.getRelationshipsByUserToIdAndStatus(userTo_id, relationshipType);
+    }
+
+    @Override
+    public List<Relationship> getRelationshipsByUserFromIdAndStatus(Long userFrom_id, RelationshipType relationshipType) {
+        return relationshipDAO.getRelationshipsByUserFromIdAndStatus(userFrom_id, relationshipType);
     }
 }
