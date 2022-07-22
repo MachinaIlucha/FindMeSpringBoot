@@ -33,4 +33,9 @@ public class Message {
     @OneToOne
     @JoinColumn(name = "user_to_id")
     private User userTo;
+
+    @PrePersist
+    public void prePersist() {
+        dateSent = new Date();
+    }
 }
