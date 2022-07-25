@@ -35,7 +35,7 @@ public class UserController {
     @Secured("ROLE_USER")
     @GetMapping(path = "/user/{userId}")
     public String profile(Model model, @PathVariable Long userId) {
-        User mainUser = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);
+        User mainUser = SecurityUtil.getAuthorizedUser();
 
         User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
         model.addAttribute("user", user)
@@ -47,7 +47,7 @@ public class UserController {
     @Secured("ROLE_USER")
     @GetMapping(path = "/myProfile")
     public String myProfile() {
-        return "redirect:/user/" + SecurityUtil.getAuthorizedUserId();
+        return "redirect:/user/" + SecurityUtil.getAuthorizedUser().getId();
     }
 
     @Secured("ROLE_USER")

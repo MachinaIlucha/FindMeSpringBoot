@@ -1,18 +1,14 @@
 package com.findme.findme.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
+@Data
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
-@ToString
 public class User {
 
     @Id

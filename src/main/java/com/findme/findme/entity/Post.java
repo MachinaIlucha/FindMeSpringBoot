@@ -1,18 +1,15 @@
 package com.findme.findme.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "posts")
-@Getter
-@Setter
-@ToString
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

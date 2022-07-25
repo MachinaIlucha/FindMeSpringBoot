@@ -4,6 +4,7 @@ import com.findme.findme.DAO.PostDAO;
 import com.findme.findme.DAO.UserDAO;
 import com.findme.findme.Exceptions.UserNotFoundException;
 import com.findme.findme.entity.Post;
+import com.findme.findme.entity.PostFilter;
 import com.findme.findme.entity.User;
 import com.findme.findme.service.interfaces.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post addPost(User user_posted_id, Long user_page_posted, String message, String location, String users_tagged) {
+    public Post addPost(User user_posted_id, Long user_page_posted, String text, String location, String users_tagged) {
         List<User> userList_tagged = new ArrayList<>();
         if (!users_tagged.isEmpty()){
             String[] users = users_tagged.split(" ");
@@ -39,7 +40,7 @@ public class PostServiceImpl implements PostService {
 
         User users_page = userDAO.findById(user_page_posted).orElseThrow(UserNotFoundException::new);
         post.setUserPagePosted(users_page);
-        post.setMessage(message);
+        post.setMessage(text);
         post.setLocation(location);
         post.setUsersTagged(userList_tagged);
 
@@ -47,8 +48,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getPostsByUserPage(Long user_id) {
+    public List<Post> getPostsByUserPage(Long user_id, PostFilter postFilter) {
         User user = userDAO.findById(user_id).orElseThrow(UserNotFoundException::new);
-        return postDAO.getPostsByUserPagePostedOrderByDatePostedDesc(user);
+
+        return switch (postFilter) {
+            case ONLYUSERPOSTS -> postDAO.getOnlyUserPosts(user);
+            case ONLYFRIENDSPOSTS -> postDAO.getOnlyFriendsPosts(user);
+            case ASCPOSTS -> postDAO.getPostsByUserPagePostedOrderByDatePostedAsc(user);
+            default -> postDAO.getPostsByUserPagePostedOrderByDatePostedDesc(user);
+        };
     }
 }

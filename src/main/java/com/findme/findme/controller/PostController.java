@@ -3,6 +3,7 @@ package com.findme.findme.controller;
 import com.findme.findme.DAO.UserDAO;
 import com.findme.findme.Exceptions.UserNotFoundException;
 import com.findme.findme.entity.Post;
+import com.findme.findme.entity.PostFilter;
 import com.findme.findme.entity.User;
 import com.findme.findme.service.interfaces.PostService;
 import com.findme.findme.util.SecurityUtil;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,23 +31,23 @@ public class PostController {
     @PostMapping(value = "/user/{userId}/addPost")
     public String addPost(@RequestParam(value = "location") String location,
                           @RequestParam(value = "user_tagged") String users_tagged,
-                          @RequestParam("text") String message,
+                          @RequestParam("text") String text,
                           @PathVariable Long userId){
 
-        User user = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);;
+        User user = SecurityUtil.getAuthorizedUser();
 
-        postService.addPost(user, userId, message, location, users_tagged);
+        postService.addPost(user, userId, text, location, users_tagged);
 
         return "redirect:/user/" + userId + "/feed";
     }
 
     @Secured("ROLE_USER")
     @GetMapping(value = "/user/{userId}/feed")
-    public String userFeed(Model model, @PathVariable Long userId){
-        User mainUser = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);
+    public String userFeed(Model model, @PathVariable Long userId, @RequestBody PostFilter postFilter){
+        User mainUser = SecurityUtil.getAuthorizedUser();
         User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
 
-        List<Post> posts = postService.getPostsByUserPage(user.getId());
+        List<Post> posts = postService.getPostsByUserPage(user.getId(), postFilter);
 
         model.addAttribute("user", user)
                 .addAttribute("posts", posts)

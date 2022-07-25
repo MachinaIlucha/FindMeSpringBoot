@@ -1,17 +1,13 @@
 package com.findme.findme.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
 @Entity
 @Table(name = "relationship")
-@Getter
-@Setter
-@ToString
 public class Relationship {
 
     @Id

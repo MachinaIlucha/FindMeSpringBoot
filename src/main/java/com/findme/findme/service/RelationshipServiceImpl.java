@@ -52,7 +52,7 @@ public class RelationshipServiceImpl implements RelationShipService {
 
     @Override
     public Relationship sendFriendRequest(Long user_to_id) {
-        User userFrom = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);
+        User userFrom = SecurityUtil.getAuthorizedUser();
         User userTo = userDAO.findById(user_to_id)
                 .orElseThrow(UserNotFoundException::new);
 

@@ -44,7 +44,7 @@ public class RelationshipController {
     @Secured("ROLE_USER")
     @PostMapping(path = "/user/{userId}/addFriend/{friendId}")
     public String addFriend(@PathVariable Long userId, @PathVariable Long friendId) {
-        User userFrom = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);
+        User userFrom = SecurityUtil.getAuthorizedUser();
 
         if(!Objects.equals(userId, userFrom.getId()))
             throw new AddFriendException();
@@ -77,21 +77,21 @@ public class RelationshipController {
 
         model.addAttribute("user", user)
                 .addAttribute("friends", friends)
-                .addAttribute("isAuthorized", userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new));
+                .addAttribute("isAuthorized", SecurityUtil.getAuthorizedUser());
 
         return "friends";
     }
 
     @Secured("ROLE_USER")
     @GetMapping(path = "/user/{userId}/incomeRequests")
-    public String incomeRequests(Model model, @PathVariable Long userId) {
-        User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
+    public String incomeRequests(Model model) {
+        User user = SecurityUtil.getAuthorizedUser();
 
         List<Relationship> incomeRequests = relationShipService.getRelationshipsByUserToIdAndStatus(user.getId(), RelationshipType.WAITING);
 
         model.addAttribute("user", user)
                 .addAttribute("incomeRequests", incomeRequests)
-                .addAttribute("isAuthorized", userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new));
+                .addAttribute("isAuthorized", user);
 
         return "incomeRequests";
     }
@@ -99,7 +99,7 @@ public class RelationshipController {
     @Secured("ROLE_USER")
     @GetMapping(path = "/user/{userId}/outcomeRequests")
     public String outcomeRequests(Model model, @PathVariable Long userId) {
-        User user = userDAO.findById(SecurityUtil.getAuthorizedUserId()).orElseThrow(UserNotFoundException::new);
+        User user = SecurityUtil.getAuthorizedUser();
 
         List<Relationship> outcomeRequests = relationShipService.getRelationshipsByUserFromIdAndStatus(userId, RelationshipType.WAITING);
 
