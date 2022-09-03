@@ -63,9 +63,6 @@ so I added this to my to-do list and plan to figure it out and finish this featu
 
 ## Screenshots of my project(I not so good at html/css)
 
-### Valorant-Shop
-Shop written in Spring, Bootstrap, Hibernate
-
 ### Registration/Home page
 ![1](https://user-images.githubusercontent.com/44270738/180313611-e5e0cf9d-4bcb-471a-b8f9-2d00b4d96414.png)
 
