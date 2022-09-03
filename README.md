@@ -1,3 +1,64 @@
+# Social media FindMe application
+
+Some time ago I decided to write a social network using spring to learn it better,
+and i have to say that it was a bit difficult at the beginning: it took me a while
+to understand this because I felt the need to understand different parts
+of it, how they interact and how to choose between options.
+
+Hopefully it can be useful for someone else.
+
+## The structure
+
+I will make a tag for every step
+and report what is done and why.
+
+### The starting step
+
+We start from a pretty basic spring boot application with spring security, with PostgreSQL database.
+It has a login screen(screenshots will be at the very bottom of the documentation), some users and roles, a home page(register page) 
+and a other pages like profile, users feed, friends and so on.
+
+I did not write tests for this application, 
+as I plan to study them a little later and write a separate project for this.
+
+#### Libraries i have used
+
+As you can see in my pom.xml i mostly used spring starters, also i added dependency for Postgres:
+
+- spring-boot-starter-web
+- spring-boot-starter-data-jpa
+- spring-boot-starter-security
+- spring-boot-starter-thymeleaf
+- postgresql
+- lombok
+
+##### How it works
+
+To start using the application, the user needs to fill out the form (the photo will be at the bottom of the documentation)
+After the user has filled out the form and clicked on the confirmation button, 
+the request will go to the user controller to the method that you will see below:
+```java
+    @PostMapping(path = "/user-registration")
+    public String registerUser(@ModelAttribute User user) {
+        userService.registerUser(user);
+        return "redirect:/user/" + user.getId();
+    }
+```
+After that controller will pass out data to the service 
+where we encrypt the password and give the user his role and save him to database.
+```java
+    @Override
+    public User registerUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Set.of(roleDAO.findRoleByRoleName(RoleName.USER)));
+        userDAO.save(user);
+        return user;
+    }
+```
+When all registration steps have been completed, the user will have to login to our application, after that he will be redirected to his profile.
+
+
+
 # Valorant-Shop
 Shop written in Spring, Bootstrap, Hibernate
 
